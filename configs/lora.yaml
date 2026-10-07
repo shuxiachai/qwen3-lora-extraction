@@ -1,0 +1,43 @@
+seed: 42
+model:
+  id: Qwen/Qwen3-0.6B
+  revision: c1899de289a04d12100db370d81485cdf75e47ca
+  local_dir: models/Qwen3-0.6B
+  device: auto
+  precision: auto
+  attn_implementation: sdpa
+data:
+  train: data/train.jsonl
+  val: data/val.jsonl
+  test: data/test.jsonl
+  max_length: 512
+  overflow: error
+prompt:
+  enable_thinking: false
+  system: >-
+    从中文文本抽取投诉人信息，只输出一个JSON对象，恰好包含name、address、email、question四个字段。
+    所有值只能是字符串或null。name是投诉人本人姓名；address和email属于投诉人，身份不明或没有信息时用null，不猜测。
+    question提取原文中连续的投诉内容，保留原有文字和标点，去掉介绍、问候和无关闲聊；没有投诉则为null。
+lora:
+  r: 8
+  lora_alpha: 32
+  lora_dropout: 0.1
+  bias: none
+  target_modules: [q_proj, k_proj, v_proj, o_proj, gate_proj, up_proj, down_proj]
+training:
+  per_device_train_batch_size: 1
+  gradient_accumulation_steps: 4
+  learning_rate: 0.0001
+  num_train_epochs: 1
+  optimizer: AdamW
+  weight_decay: 0.0
+  adam_betas: [0.9, 0.999]
+  adam_epsilon: 0.00000001
+  max_grad_norm: 1.0
+  output_dir: outputs/reproduction-20261007
+  loss_reduction: mean_of_microbatch_token_means
+evaluation:
+  max_new_tokens: 256
+  do_sample: false
+  num_beams: 1
+  repetition_penalty: 1.0

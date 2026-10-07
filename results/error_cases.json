@@ -1,0 +1,75 @@
+{
+  "report_version": 1,
+  "scope": "固定合成测试集中的三个真实错误案例：一个 LoRA 剩余错误与两个 base 严格 JSON 围栏错误。",
+  "model": {
+    "id": "Qwen/Qwen3-0.6B",
+    "revision": "c1899de289a04d12100db370d81485cdf75e47ca"
+  },
+  "cases": [
+    {
+      "id": "c08-1",
+      "kind": "LoRA 剩余抽取错误（同时保留 base 对照）",
+      "input": "《居民意见表》记录员：白子墨（并非投诉人），本件没有投诉人。住址栏：投诉人地址未登记。联络栏：投诉人邮箱未登记。意见：会议定在云岚市明日举行，附件为空。",
+      "gold": {
+        "name": null,
+        "address": null,
+        "email": null,
+        "question": null
+      },
+      "base_raw": "{\n  \"name\": \"白子墨\",\n  \"address\": null,\n  \"email\": null,\n  \"question\": \"会议定在云岚市明日举行，附件为空。\"\n}",
+      "lora_raw": "{\"name\":null,\"address\":null,\"email\":null,\"question\":\"会议定在云岚市明日举行，附件为空。\"}",
+      "base_result": {
+        "json_valid": true,
+        "schema_valid": true,
+        "field_matches": { "name": false, "address": true, "email": true, "question": false },
+        "all_correct": false
+      },
+      "lora_result": {
+        "json_valid": true,
+        "schema_valid": true,
+        "field_matches": { "name": true, "address": true, "email": true, "question": false },
+        "all_correct": false
+      },
+      "error_reason": "LoRA 仍将非投诉内容填入 question；base 还将记录员误作投诉人。"
+    },
+    {
+      "id": "c04-3",
+      "kind": "base 严格 JSON 围栏错误",
+      "input": "我在留言簿写道：维修人员约好时间却没有上门，也未通知。投诉人：贺知秋。承办点邮箱：service04@example.com。投诉人邮箱未登记。承办点地址：云岚市虚构路4号服务站。投诉人地址未登记。登记时间为周三上午。",
+      "gold": {
+        "name": "贺知秋",
+        "address": null,
+        "email": null,
+        "question": "维修人员约好时间却没有上门，也未通知。"
+      },
+      "base_raw": "```json\n{\n  \"name\": \"贺知秋\",\n  \"address\": null,\n  \"email\": \"service04@example.com\",\n  \"question\": \"维修人员约好时间却没有上门，也未通知。\"\n}\n```",
+      "base_result": {
+        "json_valid": false,
+        "schema_valid": false,
+        "parser_error": "Expecting value: line 1 column 1 (char 0)",
+        "all_correct": false
+      },
+      "error_reason": "原始输出保留 ```json 围栏；严格 JSON 解析器在首字符处拒绝该输出。"
+    },
+    {
+      "id": "c09-4",
+      "kind": "base 严格 JSON 围栏错误",
+      "input": "录音转写：先说明快递柜取件码失效，包裹被退回。随后核对身份。转述人：罗嘉言（并非投诉人），实际投诉人姓名未登记。最后核对联系方式。投诉人地址未登记。投诉人邮箱未登记。转写结束。请按原联系信息回复。",
+      "gold": {
+        "name": null,
+        "address": null,
+        "email": null,
+        "question": "快递柜取件码失效，包裹被退回。"
+      },
+      "base_raw": "```json\n{\n  \"name\": \"罗嘉言\",\n  \"address\": null,\n  \"email\": null,\n  \"question\": \"快递柜取件码失效，包裹被退回。随后核对身份。转述人：罗嘉言（并非投诉人），实际投诉人姓名未登记。最后核对联系方式。投诉人地址未登记。投诉人邮箱未登记。转写结束。\"\n}\n```",
+      "base_result": {
+        "json_valid": false,
+        "schema_valid": false,
+        "parser_error": "Expecting value: line 1 column 1 (char 0)",
+        "all_correct": false
+      },
+      "error_reason": "原始输出保留 ```json 围栏；严格 JSON 解析器在首字符处拒绝该输出。"
+    }
+  ],
+  "note": "所有案例均来自合成固定测试集。本轮错误分析仅用于描述观察结果，不用于调参。"
+}

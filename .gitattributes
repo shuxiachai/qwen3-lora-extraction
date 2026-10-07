@@ -1,0 +1,5 @@
+* text=auto eol=lf
+# Preserve the exact synthetic dataset bytes used by the recorded run.
+data/*.jsonl -text whitespace=cr-at-eol
+# Preserve the verbatim third-party tutorial formatting.
+docs/reference/tutorial.md whitespace=-blank-at-eol
