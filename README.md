@@ -99,3 +99,11 @@ py -3.12 -m venv .venv
 ## 参考与范围
 
 本学习项目参考 [Datawhale self-llm 的指定 Qwen3 章节](https://github.com/datawhalechina/self-llm/blob/e0fe14a35123f5cab6d32cb9e716b571bf0994cf/models/Qwen3/08-Qwen3_0_6B的小模型有什么用.md)。原文、来源与 Apache-2.0 许可保留在 docs/reference/。本项目另行编写数据、检查、训练和比较代码，修正了模板/标签/数据划分与生成参数兼容性问题。复现成果是学习性流程验证，不是生产服务或真实业务效果承诺。
+
+## 许可
+
+本项目自行编写的代码、文档和完全虚构的示例数据采用 [Apache-2.0 许可](LICENSE)。Copyright 2026 shuxiachai。
+
+`docs/reference/tutorial.md` 是 Datawhale self-llm 教程的原样副本；来源、commit 和归属说明见 [NOTICE](docs/reference/NOTICE.md)，上游 Apache-2.0 许可保留在 [docs/reference/LICENSE](docs/reference/LICENSE)。
+
+基础模型和各项依赖遵循各自的许可；本仓库不分发模型权重。
